@@ -71,10 +71,12 @@ export default function GalleryModal({ onclose }: { onclose: () => void }) {
     const params: CivitModelQueryParams = {
       limit: "30",
       nsfw: "false",
-      types: modelType,
     };
     if (searchQuery !== "") {
       params.query = searchQuery;
+    }
+    if (modelType != null) {
+      params.types = modelType;
     }
 
     const queryString = new URLSearchParams(params).toString();
