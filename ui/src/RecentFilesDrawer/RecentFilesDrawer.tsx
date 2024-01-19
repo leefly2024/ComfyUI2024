@@ -20,16 +20,13 @@ import {
   isFolder,
   listWorkflows,
   listFolderContent,
-  tagsTable,
   workspace,
   foldersTable,
 } from "../db-tables/WorkspaceDB";
 import {
   IconChevronDown,
-  IconChevronUp,
   IconFolderPlus,
   IconPlus,
-  IconX,
   IconFolder,
 } from "@tabler/icons-react";
 import { RecentFilesContext } from "../WorkspaceContext";
@@ -50,11 +47,16 @@ import ImportFileButton from "./ImportFileButton";
 import MyTagsRow from "./MyTagsRow";
 
 type Props = {
+  isOpen: boolean;
   onClose: () => void;
   onClickNewFlow: () => void;
 };
 
-export default function RecentFilesDrawer({ onClose, onClickNewFlow }: Props) {
+export default function RecentFilesDrawer({
+  onClose,
+  onClickNewFlow,
+  isOpen,
+}: Props) {
   const [currentRenderingData, setCurrentRenderingData] = useState<
     Array<Folder | Workflow>
   >([]);
@@ -69,11 +71,11 @@ export default function RecentFilesDrawer({ onClose, onClickNewFlow }: Props) {
   const debounceSearchValue = useDebounce(searchValue, 400);
   const draggingWorkflowID = useRef<string | null>(null);
   const [draggingFile, setDraggingFile] = useState<Workflow | Folder | null>(
-    null
+    null,
   );
   const sortTypeRef = useRef<ESortTypes>(
     (window.localStorage.getItem(sortTypeLocalStorageKey) as ESortTypes) ??
-      ESortTypes.RECENTLY_MODIFIED
+      ESortTypes.RECENTLY_MODIFIED,
   );
 
   const loadLatestWorkflows = () => {
@@ -105,7 +107,7 @@ export default function RecentFilesDrawer({ onClose, onClickNewFlow }: Props) {
       setCurrentRenderingData(sortFileItem(filterResult, sortTypeRef.current));
     } else {
       setCurrentRenderingData(
-        sortFileItem(aloneFlowsAndFoldersRef.current, sortTypeRef.current)
+        sortFileItem(aloneFlowsAndFoldersRef.current, sortTypeRef.current),
       );
     }
   };
@@ -126,7 +128,7 @@ export default function RecentFilesDrawer({ onClose, onClickNewFlow }: Props) {
       deleteFlow(id);
       loadLatestWorkflows();
     },
-    [selectedTag, debounceSearchValue]
+    [selectedTag, debounceSearchValue],
   );
 
   useEffect(() => {
@@ -170,7 +172,7 @@ export default function RecentFilesDrawer({ onClose, onClickNewFlow }: Props) {
         return;
       case "selectAll":
         setSelectedKeys(
-          value ? allFlowsRef.current.map((flow) => flow.id) : []
+          value ? allFlowsRef.current.map((flow) => flow.id) : [],
         );
         return;
     }
@@ -202,7 +204,7 @@ export default function RecentFilesDrawer({ onClose, onClickNewFlow }: Props) {
         setRefreshFolderStamp: setRefreshFolderStamp,
       }}
     >
-      <Box style={{ width: DRAWER_WIDTH }}>
+      <Box style={{ width: DRAWER_WIDTH }} hidden={!isOpen}>
         <Card
           width={DRAWER_WIDTH}
           height={"100vh"}
