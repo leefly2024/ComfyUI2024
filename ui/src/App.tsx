@@ -35,6 +35,7 @@ const RecentFilesDrawer = React.lazy(
 const GalleryModal = React.lazy(() => import("./gallery/GalleryModal"));
 import { scanLocalNewFiles } from "./Api";
 import { IconExternalLink } from "@tabler/icons-react";
+import { deepCompare } from "./utils/jsonUtils";
 const ModelManagerTopbar = React.lazy(
   () => import("./model-manager/topbar/ModelManagerTopbar"),
 );
@@ -176,7 +177,7 @@ export default function App() {
     } catch (e) {
       console.error("error parsing json", e);
     }
-    const equal = JSON.stringify(graphJson) === JSON.stringify(lastSaved);
+    const equal = deepCompare(graphJson, lastSaved);
     return !equal;
   };
 
