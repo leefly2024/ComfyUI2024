@@ -127,10 +127,13 @@ async def get_system_dir(request):
 def get_my_workflows_dir():
     data = read_table('userSettings')
     if (data):
-        records = json.loads(data)
-        curDir = records['myWorkflowsDir'] if records else None
-        if curDir:
-            return curDir
+        try:
+            records = json.loads(data)
+            curDir = records.get('myWorkflowsDir', None)  
+            if curDir:
+                return curDir
+        except Exception as e:
+            print('error getting my workflows dir', e)
     return os.path.join(comfy_path, 'my_workflows')
 
 
